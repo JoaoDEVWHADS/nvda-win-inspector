@@ -1,11 +1,14 @@
 import globalPluginHandler
 import ui
 import api
+import addonHandler
 from .updateChecker import UpdateChecker, show_update_dialog, CURRENT_VERSION
+
+addonHandler.initTranslation()
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	
-	scriptCategory = "Window Inspector"
+	scriptCategory = _("Window Inspector")
 
 	def __init__(self):
 		super(GlobalPlugin, self).__init__()
@@ -22,18 +25,20 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		fgObj = api.getForegroundObject()
 		focusObj = api.getFocusObject()
 		
-		winName = fgObj.name if fgObj and fgObj.name else "[Sem Janela]"
+		winName = fgObj.name if fgObj and fgObj.name else _("[No Window]")
 		
 		try:
 			wClass = focusObj.windowClassName
 		except (AttributeError, NotImplementedError):
-			wClass = "[Sem Classe]"
+			wClass = _("[No Class]")
 			
 		if not wClass:
-			wClass = "[Sem Classe]"
+			wClass = _("[No Class]")
 
-		msg = "Janela: {}, classe: {}".format(winName, wClass)
+		msg = _("Window: {winName}, class: {wClass}").format(winName=winName, wClass=wClass)
 		ui.message(msg)
+
+	script_announceWindowInfo.__doc__ = _("Announces the name of the foreground window and the window class name of the focused object.")
 
 	__gestures = {
 		"kb:NVDA+control+shift+d": "announceWindowInfo",
