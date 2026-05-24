@@ -1,10 +1,22 @@
 import globalPluginHandler
 import ui
 import api
+from .updateChecker import UpdateChecker, show_update_dialog, CURRENT_VERSION
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	
 	scriptCategory = "Window Inspector"
+
+	def __init__(self):
+		super(GlobalPlugin, self).__init__()
+		self.update_checker = UpdateChecker(
+			on_update_available_callback=self._on_update_available
+		)
+		self.update_checker.start()
+
+	def _on_update_available(self, version, download_url, release_info):
+		"""Callback called when an update is available."""
+		show_update_dialog(CURRENT_VERSION, version, download_url, release_info)
 
 	def script_announceWindowInfo(self, gesture):
 		fgObj = api.getForegroundObject()
